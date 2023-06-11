@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %} Chatroom | NetVibe {% endblock title%}
+{% block content %}
+
+
+<h1>Welcome to {{ room_name }} room</h1>
+
+<textarea name="" id="chat-text" cols="30" rows="10"></textarea> <br>
+<input type="text" id="input" size="80">
+<input type="button" id="submit" value="send">
+
+
+<div id="user-hello"></div>
+
+<!-- convert django dynamic roon name to a readable js form -->
+{{ room_name|json_script:"room-name" }}
+
+<script>
+    document.querySelector('#submit').onclick = function (e) {
+        const messageInputDom = document.querySelector('#input');
+        const message = messageInputDom.value;
+        console.log(message);
+        chatSocket.send(JSON.stringify({
+            'message': message
+        }))
+        messageInputDom.value = '';
+    }
+
+    const rooName = JSON.parse(document.getElementById('roo-name').textContent);
+    const chatSocket = new WebSocket(
+        "ws://" + window.location.host + "/ws/chat/" + roonName + "/"
+    );
+
+    chatSocket.onmessage = function (e) {
+        const data = JSON.parse(e.data);
+        console.log(data);
+        document.getElementById('#chat-text').value += (data.message + '\n')
+    }
+</script>
+
+{% endblock content %}

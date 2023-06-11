@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %} Main Page | NetVibe {% endblock title%}
+
+
+{% block content %}
+<h1 class="text-center my-5">Welcome to Main page</h1>
+
+<div class="container">
+    <form action="" method="POST">
+        {% csrf_token %}
+        <div>
+            <input type="text" name="new-statistic">
+            <button class="btn btn-primary" type="submit">+add</button>
+        </div>
+    </form>
+
+    {% if qs %}
+    <ul>
+        {% for i in qs %}
+        <li>
+            <a href="{% url 'dashboard' i.slug %}">{{ i.name }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+
+{% endif %}
+
+{% endblock content %}
